@@ -29,7 +29,7 @@
 											mdi-pencil
 											</v-icon>
 									</v-btn>
-									<v-btn depressed color="error ml-2" @click="deleteTask(task.id)">
+									<v-btn depressed color="error ml-2" @click="deleteTask(task.id)" :disabled="tasks.isLoading">
 										<v-icon
 											large
 											color="darken-2"
@@ -51,20 +51,27 @@
     import axios from "axios";
 
     const tasks = reactive({
-        tasks: []
+        tasks: [],
+		isDataLoading : false,
+		isLoading : false,
     })
     onMounted(() => {
         getTasks()
     })
 
     const deleteTask = async (id) => {
+		tasks.isLoading = !tasks.isLoading
         const TasksData = await axios.delete(`/api/posts/post`, {data:{id : id}});
+		tasks.isLoading = !tasks.isLoading
 		if(TasksData) {
 			getTasks()	
 		}
     }
     const getTasks = async () => {
+		tasks.isDataLoading = !tasks.isDataLoading;
         const TasksData = await axios.post('/api/posts/list');
+		tasks.isDataLoading = !tasks.isDataLoading;
+
         tasks.tasks = TasksData.data
     }
 </script>

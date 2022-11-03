@@ -7,6 +7,7 @@
 	
 	const user = reactive({
 		valid: true,
+		isLoading: false,
 		title: null,
 		description: null,
 		id: route.params.id,
@@ -59,10 +60,14 @@
 		}
 		
 		if (user.valid) {
+			user.isLoading = true
 			if (user.isEdit) {
 				task = await axios.put(`/api/posts/update`, data);
+				user.isLoading = false
+				
 			} else {
 				task = await axios.post(`/api/posts/create`, data);
+				user.isLoading = false
 			}
 		}
 
@@ -109,7 +114,7 @@
 		</v-row>
 		<v-row>
 			<v-col sm="12" md="6">
-				<v-btn type="button" color="success" @click="submitForm">
+				<v-btn type="button" color="success" @click="submitForm" :disabled="user.isLoading">
 					Submit
 				</v-btn>
 			</v-col>
